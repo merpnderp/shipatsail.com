@@ -1,6 +1,6 @@
 <template>
   <v-app id="app">
-    <v-navigation-drawer fixed v-model="drawer" app right stateless>
+    <v-navigation-drawer fixed v-model="drawer" app stateless>
       <v-list dense>
         <router-link to='/'>
           <v-list-tile>
@@ -27,14 +27,17 @@
       <v-toolbar-title @click.stop="route('/')">Notes</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items right>
-          <v-btn v-if="!user && user !== 'fetching'" @click.stop="route('signin') "flat>Sign In</v-btn>
-          <v-btn v-if="!user && user !== 'fetching'" @click.stop="route('signup')" flat>Register</v-btn>
+          <v-btn v-if="!user && user !== 'fetching'" to="signin" flat>Sign In</v-btn>
+          <v-btn v-if="!user && user !== 'fetching'" to="signup" flat>Register</v-btn>
           <v-btn v-if="user && user !== 'fetching'" @click.stop="signout" flat>Sign Out</v-btn>
         </v-toolbar-items>
     </v-toolbar>
-    <div class="main">
+    <v-content>
       <router-view/>
-    </div>
+    </v-content>
+    <v-footer color="indigo" app>
+      <span class="white--text">&copy; 2017</span>
+    </v-footer>
   </v-app>
 </template>
 
@@ -64,12 +67,12 @@ export default {
 </script>
 
 <style>
-#app {
+/* #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
+} */
 </style>

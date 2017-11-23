@@ -6,6 +6,7 @@ import * as getters from './getters'
 // import products from './modules/products'
 import createLogger from '../plugins/logger'
 import * as firebase from '../api/firebase'
+import router from '../router'
 
 Vue.use(Vuex)
 
@@ -20,11 +21,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    setUser: ({ commit }, user) => {
+      if (user && (router.currentRoute.path === '/signin' || router.currentRoute.path === '/signup')) {
+        router.push('/')
+      }
+      commit(types.SET_USER, user)
+    },
     signIn: ({ commit }, { email, password }) => {
       firebase.signIn(email, password)
     },
-    setUser: ({ commit }, user) => {
-      commit(types.SET_USER, user)
+    signUp: ({ commit }, { email, password }) => {
+      firebase.createUserWithEmailAndPassword(email, password)
     },
     signOut: () => {
       firebase.signOut()

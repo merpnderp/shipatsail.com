@@ -4,9 +4,10 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/Home'
 import SignIn from '@/components/Authentication/SignIn'
 import SignUp from '@/components/Authentication/SignUp'
+import store from '../store'
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -25,3 +26,12 @@ export default new Router({
     }
   ]
 })
+router.beforeEach((to, from, next) => {
+  if ((to.path === '/signup' || to.path === '/signin') && store.state.user) {
+    next('/')
+  } else {
+    next()
+  }
+})
+
+export default router
