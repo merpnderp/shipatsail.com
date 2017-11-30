@@ -1,44 +1,20 @@
 <template>
-  <v-app id="app">
-    <v-navigation-drawer fixed v-model="drawer" app stateless>
-      <v-list dense>
-        <router-link to='/'>
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon>home</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>Home</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </router-link>
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-icon>contact_mail</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Contact</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar color="indigo" dark fixed app>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title @click.stop="route('/')">Notes</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items right>
-          <v-btn v-if="!user && user !== 'fetching'" to="signin" flat>Sign In</v-btn>
-          <v-btn v-if="!user && user !== 'fetching'" to="signup" flat>Register</v-btn>
-          <v-btn v-if="user && user !== 'fetching'" @click.stop="signout" flat>Sign Out</v-btn>
-        </v-toolbar-items>
-    </v-toolbar>
-    <v-content>
-      <router-view/>
-    </v-content>
-    <v-footer color="indigo" app>
-      <span class="white--text">&copy; 2017</span>
-    </v-footer>
-  </v-app>
+  <nav class="db dt-l w-100 border-box pa3 ph5-l">
+    <a class="db dtc-l v-mid mid-gray link dim w-100 w-25-l tc tl-l mb2 mb0-l" href="#" title="Home">
+      <img src="http://tachyons.io/img/logo.jpg" class="dib w2 h2 br-100" alt="shipatsail.com">
+    </a>
+    <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+
+      <a class="link dim dark-gray f6 f5-l dib mr3 mr4-l" href="#/" title="How it Works">Home</a>
+
+      <a v-if="!user && user !== 'fetching'" to="signin" 
+        class="link dim dark-gray f6 f5-l dib mr3 mr4-l" href="#/signin" title="Sign In">Sign In</a>
+      <a v-if="!user && user !== 'fetching'" to="signup" 
+        class="link dim dark-gray f6 f5-l dib mr3 mr4-l" href="#/signup" title="Register new account">Register</a>
+      <a v-if="!user && user !== 'fetching'" @click.stop="signout"
+        class="link dim dark-gray f6 f5-l dib mr3 mr4-l" title="Sign Out">Sign Out</a>
+    </div>
+  </nav>
 </template>
 
 <script>
