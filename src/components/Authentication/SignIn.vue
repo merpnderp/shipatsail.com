@@ -21,10 +21,7 @@
             required
           ></v-text-field>
 
-          <v-btn
-            @click="submit"
-            :disabled="!valid"
-          >
+          <v-btn @click="submit" :disabled="!valid">
             submit
           </v-btn>
           <v-btn @click="clear">clear</v-btn>
@@ -50,7 +47,6 @@ export default {
       v => (v && v.length) >= 8 || 'Password must be at least 8 characters'
     ]
   }),
-  // created: function () { console.log(this.$store.state) },
   computed: {
     user () {
       return this.$store.state.user
