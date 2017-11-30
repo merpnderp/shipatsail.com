@@ -29,6 +29,9 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if ((to.path === '/signup' || to.path === '/signin') && store.state.user) {
     next('/')
+  } else if (to.path === '/signout') {
+    store.dispatch('signOut')
+    next('/')
   } else {
     next()
   }

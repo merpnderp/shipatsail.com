@@ -48,7 +48,7 @@ auth.onAuthStateChanged(function (user) {
     console.log('setUser', user)
     user.getIdToken().then((accessToken) => {
       console.log('setting the user to', user)
-      auth.accessToken(accessToken)
+      // auth.accessToken(accessToken)
       store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
     })
   } else {
