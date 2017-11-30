@@ -16,7 +16,7 @@
       </div>
     </nav>
     <router-view></router-view>
-    <footer class="pv4 ph3 ph5-m ph6-l mid-gray">
+    <footer class="pv4 ph3 ph5-m fl-page-footer-wrap ph6-l mid-gray">
       <a class="link near-black hover-silver dib mh3 tc" href="https://facebook.com" title="Facebook">
         <small class="f6 db tc">© 2017</small>
         </a>
@@ -71,6 +71,11 @@ export default {
 </script>
 
 <style>
+.fl-page-footer-wrap {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+}
 /* #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

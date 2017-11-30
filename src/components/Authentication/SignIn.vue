@@ -1,5 +1,5 @@
 <template>
-  <main class="pa4 black-80">
+  <main class="pa4 black-80 h-100">
     <form class="measure center">
       <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
         <legend class="f4 fw6 ph0 mh0">Sign In</legend>
