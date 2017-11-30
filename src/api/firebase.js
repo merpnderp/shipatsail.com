@@ -46,10 +46,14 @@ export const createUserWithEmailAndPassword = (email, password) => {
 auth.onAuthStateChanged(function (user) {
   if (user) {
     console.log('setUser', user)
-    store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
+    user.getIdToken().then((accessToken) => {
+      console.log('setting the user to', user)
+      auth.accessToken(accessToken)
+      store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
+    })
   } else {
     store.dispatch('setUser', undefined)
-    console.log('setUser', undefined)
+    console.log('There was no user')
   }
 })
 
@@ -62,17 +66,17 @@ export const getFolders = function () {
   return 'hi'
 }
 
-setTimeout(function () {
-  const citiesRef = db.collection('cities')
-  Promise.all([
-    citiesRef.doc('SF').set({ name: 'San Francisco', state: 'CA', country: 'USA', capital: false, population: 860000 }),
-    citiesRef.doc('LA').set({ name: 'Los Angeles', state: 'CA', country: 'USA', capital: false, population: 3900000 }),
-    citiesRef.doc('DC').set({ name: 'Washington, D.C.', state: 'Poopistan', country: 'USA', capital: true, population: 680000 }),
-    citiesRef.doc('TOK').set({ name: 'Tokyo', state: null, country: 'Japan', capital: true, population: 9000000 }),
-    citiesRef.doc('BJ').set({ name: 'Beijing', state: null, country: 'China', capital: true, population: 21500000 })
-  ]).then(function () {
-    console.log('all done')
-  }).catch(function (error) {
-    console.log('error', error)
-  })
-}, 1000)
+// setTimeout(function () {
+//   const citiesRef = db.collection('cities')
+//   Promise.all([
+//     citiesRef.doc('SF').set({ name: 'San Francisco', state: 'CA', country: 'USA', capital: false, population: 860000 }),
+//     citiesRef.doc('LA').set({ name: 'Los Angeles', state: 'CA', country: 'USA', capital: false, population: 3900000 }),
+//     citiesRef.doc('DC').set({ name: 'Washington, D.C.', state: 'Poopistan', country: 'USA', capital: true, population: 680000 }),
+//     citiesRef.doc('TOK').set({ name: 'Tokyo', state: null, country: 'Japan', capital: true, population: 9000000 }),
+//     citiesRef.doc('BJ').set({ name: 'Beijing', state: null, country: 'China', capital: true, population: 21500000 })
+//   ]).then(function () {
+//     console.log('all done')
+//   }).catch(function (error) {
+//     console.log('error', error)
+//   })
+// }, 1000)
