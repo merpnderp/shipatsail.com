@@ -10,6 +10,7 @@ const auth = firebase.auth()
 
 export const signIn = (email, password) => {
   auth.signInWithEmailAndPassword(email, password).catch(function (error) {
+    store.dispatch('setUser', undefined)
     console.log(error)
   })
 }
@@ -47,9 +48,10 @@ auth.onAuthStateChanged(function (user) {
   if (user) {
     console.log('setUser', user)
     user.getIdToken().then((accessToken) => {
-      console.log('setting the user to', user)
       // auth.accessToken(accessToken)
+      console.log(user)
       store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
+      getFolders()
     })
   } else {
     store.dispatch('setUser', undefined)
@@ -58,12 +60,26 @@ auth.onAuthStateChanged(function (user) {
 })
 
 export const addFolder = function (folder) {
-  const foldersColleciton = db.collection('folders')
-  return foldersColleciton.add(folder)
+  if (store.state.user) {
+    db.collection('users').doc(store.state.user.uid).collection('folders').add({ name: folder })
+  }
+  // const foldersColleciton = db.collection('folders')
+  // return foldersColleciton.add(folder)
 }
 
 export const getFolders = function () {
-  return 'hi'
+  // addFolder('New Folder')
+  if (store.state.user) {
+    console.log('getting for ', store.state.user.uid)
+    db.collection('users').doc(store.state.user.uid).collection('folders').get().then((querySnapshot) => {
+      const folders = []
+      querySnapshot.forEach((doc) => {
+        console.log(doc)
+        folders.push(doc.data().name)
+      })
+      store.dispatch('setFolders', folders)
+    })
+  }
 }
 
 // setTimeout(function () {

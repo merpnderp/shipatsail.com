@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/Home'
 import SignIn from '@/components/Authentication/SignIn'
 import SignUp from '@/components/Authentication/SignUp'
+import FolderList from '@/components/FolderList'
 import store from '../store'
 Vue.use(Router)
 
@@ -12,7 +13,13 @@ const router = new Router({
     {
       path: '/',
       name: 'Home',
-      component: HelloWorld
+      component: HelloWorld,
+      children: [
+        // UserHome will be rendered inside User's <router-view>
+        // when /user/:id is matched
+        { path: '', component: FolderList }
+        // ...other sub routes
+      ]
     },
     {
       path: '/signin',
@@ -26,6 +33,7 @@ const router = new Router({
     }
   ]
 })
+
 router.beforeEach((to, from, next) => {
   if ((to.path === '/signup' || to.path === '/signin') && store.state.user) {
     next('/')

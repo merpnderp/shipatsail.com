@@ -14,44 +14,15 @@
         <!-- <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox"> Remember me</label> -->
       </fieldset>
       <div class="">
-        <input @click.stop="submit" class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" value="Sign in">
+        <input v-if="user !== 'validating'" @click.stop="submit" class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" value="Sign in">
+        <input v-if="user === 'validating'" class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" value="Signing in...">
       </div>
-      <div class="lh-copy mt3">
+      <div class="lh-copy mt3" :class="{ 'disabled-link': user === 'validating' }">
         <router-link to="/signup" class="f6 link dim black db">Register</router-link>
         <a href="#0" class="f6 link dim black db">Forgot your password?</a>
       </div>
     </form>
   </main>
-  <!-- <v-container fluid>
-    <v-layout row wrap>
-      <v-flex offset-sm2 sm7 xs12>
-        <v-form v-model="valid" ref="form" lazy-validation>
-          <v-text-field
-            label="E-mail"
-            v-model="email"
-            :rules="emailRules"
-            required
-            autofocus
-          ></v-text-field>
-          <v-text-field
-            label="Password"
-            v-model="password"
-            :rules="passwordRules"
-            :counter="8"
-            :append-icon="passwordHide ? 'visibility' : 'visibility_off'"
-            :append-icon-cb="() => (passwordHide = !passwordHide)"
-            :type="passwordHide ? 'password' : 'text'"
-            required
-          ></v-text-field>
-
-          <v-btn @click="submit" :disabled="!valid">
-            submit
-          </v-btn>
-          <v-btn @click="clear">clear</v-btn>
-        </v-form>
-      </v-flex>
-    </v-layout>
-  </v-container> -->
 </template>
 
 <script>

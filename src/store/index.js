@@ -13,11 +13,15 @@ Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
 export default new Vuex.Store({
   state: {
-    user: 'fetching'
+    user: 'fetching',
+    folders: []
   },
   mutations: {
     [types.SET_USER] (state, user) {
       state.user = user
+    },
+    [types.SET_FOLDERS] (state, folders) {
+      state.folders = folders
     }
   },
   actions: {
@@ -28,13 +32,19 @@ export default new Vuex.Store({
       commit(types.SET_USER, user)
     },
     signIn: ({ commit }, { email, password }) => {
-      firebase.signIn(email, password)
+      commit(types.SET_USER, 'validating')
+      setTimeout(() => {
+        firebase.signIn(email, password)
+      }, 5000)
     },
     signUp: ({ commit }, { email, password }) => {
       firebase.createUserWithEmailAndPassword(email, password)
     },
     signOut: () => {
       firebase.signOut()
+    },
+    setFolders: ({ commit }, folders) => {
+      commit(types.SET_FOLDERS, folders)
     }
 
   },
