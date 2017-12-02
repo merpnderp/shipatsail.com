@@ -5,47 +5,69 @@ import * as types from './mutation-types'
 import * as getters from './getters'
 // import products from './modules/products'
 import createLogger from '../plugins/logger'
-import * as firebase from '../api/firebase'
 import router from '../router'
-
+import { auth, db, createUserWithEmailAndPassword, signIn, signOut } from '../api/firebase'
 Vue.use(Vuex)
 
+export const USERSTATES = { 'LOGGEDOUT': 'LOGGEDOUT', 'FETCHING': 'FETCHING', 'LOGGEDIN': 'LOGGEDIN' }
+
 const debug = process.env.NODE_ENV !== 'production'
+
+// let folderSubscription
+
 export default new Vuex.Store({
   state: {
-    user: 'fetching',
+    userState: USERSTATES.LOGGEDOUT,
     folders: []
   },
   mutations: {
-    [types.SET_USER] (state, user) {
-      state.user = user
+    [types.SET_USER_STATE] (state, userState) {
+      state.userState = userState
     },
     [types.SET_FOLDERS] (state, folders) {
       state.folders = folders
     }
   },
   actions: {
-    setUser: ({ commit }, user) => {
-      if (user && (router.currentRoute.path === '/signin' || router.currentRoute.path === '/signup')) {
+    setUserState: ({ commit, state }, userState) => {
+      if (userState === USERSTATES.LOGGEDIN && (router.currentRoute.path === '/signin' || router.currentRoute.path === '/signup')) {
         router.push('/')
       }
-      commit(types.SET_USER, user)
+      commit(types.SET_USER_STATE, userState)
+      console.log('userState before getting folders', userState)
+      if (userState === USERSTATES.LOGGEDIN && !!auth.currentUser.uid) {
+        console.log('getting folders for ', auth.currentUser.uid)
+        db.collection('users').doc(auth.currentUser.uid).collection('folders').onSnapshot((querySnapshot) => {
+          console.log('callback called with ', querySnapshot)
+          const folders = []
+          querySnapshot.forEach((doc) => {
+            folders.push({name: doc.data().name, id: doc.id})
+            // folders.push({name: doc.data().name, editing: false})
+          }, function (error) {
+            console.log('Snapshot error', error)
+          })
+          // this.folders = folders
+          commit(types.SET_FOLDERS, folders)
+        })
+      } else {
+        commit(types.SET_FOLDERS, [])
+      }
     },
     signIn: ({ commit }, { email, password }) => {
-      commit(types.SET_USER, 'validating')
-      setTimeout(() => {
-        firebase.signIn(email, password)
-      }, 5000)
+      commit(types.SET_USER_STATE, USERSTATES.FETCHING)
+      signIn(email, password)
     },
     signUp: ({ commit }, { email, password }) => {
-      firebase.createUserWithEmailAndPassword(email, password)
+      createUserWithEmailAndPassword(email, password)
     },
-    signOut: () => {
-      firebase.signOut()
-    },
-    setFolders: ({ commit }, folders) => {
-      commit(types.SET_FOLDERS, folders)
+    signOut: ({ commit }) => {
+      signOut()
+      // commit(types.SET_FOLDERS, [])
     }
+    // ,
+    // setFolders: ({ commit }, folders) => {
+    //   commit(types.SET_FOLDERS, folders)
+    // }
 
   },
   // actions,

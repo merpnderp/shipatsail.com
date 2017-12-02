@@ -12,7 +12,6 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
       component: HelloWorld,
       children: [
         // UserHome will be rendered inside User's <router-view>
@@ -35,7 +34,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if ((to.path === '/signup' || to.path === '/signin') && store.state.user) {
+  if ((to.path === '/signup' || to.path === '/signin') && store.state.userState === 'LOGGEDIN') {
     next('/')
   } else if (to.path === '/signout') {
     store.dispatch('signOut')

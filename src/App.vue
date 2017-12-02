@@ -7,11 +7,11 @@
       </a>
       <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
         <router-link class="link dim dark-gray f6 f5-l dib mr3 mr4-l" to="/" title="Home">Home</router-link>
-        <router-link v-if="!user && user !== 'fetching'" to="signin" 
+        <router-link v-if="userState !== 'LOGGEDIN'" to="signin" 
           class="link dim dark-gray f6 f5-l dib mr3 mr4-l" title="Sign In">Sign In</router-link>
-        <router-link v-if="!user && user !== 'fetching'" to="/signup" 
+        <router-link v-if="userState !== 'LOGGEDIN'" to="/signup" 
           class="link dim dark-gray f6 f5-l dib mr3 mr4-l" title="Register new account">Register</router-link>
-        <router-link v-if="user && user !== 'fetching'" to="/signout"
+        <router-link v-if="userState === 'LOGGEDIN'" to="/signout"
           class="link dim dark-gray f6 f5-l dib mr3 mr4-l" title="Sign Out">Sign Out</router-link>
       </div>
     </nav>
@@ -36,7 +36,7 @@ export default {
     }
   },
   computed: {
-    user () { return this.$store.state.user }
+    userState () { return this.$store.state.userState }
   },
   methods: {
     route (r) {

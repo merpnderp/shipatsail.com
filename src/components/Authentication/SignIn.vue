@@ -14,10 +14,10 @@
         <!-- <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox"> Remember me</label> -->
       </fieldset>
       <div class="">
-        <input v-if="user !== 'validating'" @click.stop="submit" class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" value="Sign in">
-        <input v-if="user === 'validating'" class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" value="Signing in...">
+        <input v-if="userState !== 'FETCHING'" @click.stop="submit" class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" value="Sign in">
+        <input v-if="userState === 'FETCHING'" class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" value="Signing in...">
       </div>
-      <div class="lh-copy mt3" :class="{ 'disabled-link': user === 'validating' }">
+      <div class="lh-copy mt3" :class="{ 'disabled-link': userState === 'FETCHING' }">
         <router-link to="/signup" class="f6 link dim black db">Register</router-link>
         <a href="#0" class="f6 link dim black db">Forgot your password?</a>
       </div>
@@ -42,8 +42,8 @@ export default {
     ]
   }),
   computed: {
-    user () {
-      return this.$store.state.user
+    userState () {
+      return this.$store.state.userState
     }
   },
   methods: {

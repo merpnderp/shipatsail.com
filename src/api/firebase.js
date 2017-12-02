@@ -1,22 +1,26 @@
 import config from './firebase-config'
 import firebase from 'firebase'
 import 'firebase/firestore'
-import store from '../store'
+import store, { USERSTATES } from '../store'
 
 firebase.initializeApp(config)
 
-const db = firebase.firestore()
-const auth = firebase.auth()
+export const db = firebase.firestore()
+
+export const auth = firebase.auth()
 
 export const signIn = (email, password) => {
-  auth.signInWithEmailAndPassword(email, password).catch(function (error) {
-    store.dispatch('setUser', undefined)
+  auth.signInWithEmailAndPassword(email, password).then((user) => {
+    store.dispatch('setUserState', USERSTATES.LOGGEDIN)
+  }).catch(function (error) {
+    store.dispatch('setUserState', USERSTATES.LOGGEDOUT)
     console.log(error)
   })
 }
 
 export const signOut = () => {
   auth.signOut().then(function () {
+    store.dispatch('setUserState', USERSTATES.LOGGEDOUT)
   }).catch(function (error) {
     console.log(error)
   })
@@ -46,41 +50,19 @@ export const createUserWithEmailAndPassword = (email, password) => {
 
 auth.onAuthStateChanged(function (user) {
   if (user) {
-    console.log('setUser', user)
+    // console.log('calling getIdToken', user)
     user.getIdToken().then((accessToken) => {
-      // auth.accessToken(accessToken)
-      console.log(user)
-      store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
-      getFolders()
+      // console.log('after calling getIdToken')
+      store.dispatch('setUserState', USERSTATES.LOGGEDIN)
+      // store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
+      // store.dispatch('setUser', user.email)
+      // getFolders()
     })
   } else {
-    store.dispatch('setUser', undefined)
+    store.dispatch('setUserState', USERSTATES.LOGGEDOUT)
     console.log('There was no user')
   }
 })
-
-export const addFolder = function (folder) {
-  if (store.state.user) {
-    db.collection('users').doc(store.state.user.uid).collection('folders').add({ name: folder })
-  }
-  // const foldersColleciton = db.collection('folders')
-  // return foldersColleciton.add(folder)
-}
-
-export const getFolders = function () {
-  // addFolder('New Folder')
-  if (store.state.user) {
-    console.log('getting for ', store.state.user.uid)
-    db.collection('users').doc(store.state.user.uid).collection('folders').get().then((querySnapshot) => {
-      const folders = []
-      querySnapshot.forEach((doc) => {
-        console.log(doc)
-        folders.push(doc.data().name)
-      })
-      store.dispatch('setFolders', folders)
-    })
-  }
-}
 
 // setTimeout(function () {
 //   const citiesRef = db.collection('cities')
