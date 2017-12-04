@@ -1,14 +1,14 @@
 <template>
 <article class="pa3 pa5-ns">
   <h1 class="f4 bold center mw6">Folders</h1>
-  {{editingId}}
   <ul class="list pl0 ml0 center mw6 ba b--light-silver br2">
-    <template v-for="folder in folders">
-      <li v-if="folder.id !== editingId" :key="folder.id" @click="setEditingId(folder.id)" class="ph3 pv3 bb b--light-silver">
-        {{folder.name}}
+    <template v-for="(folder, index) in folders">
+      <!-- <li v-if="folder.id !== editingId" :key="folder.id" @click="setEditingId(folder.id)" class="ph3 pv3 bb b--light-silver"> -->
+      <li v-if="folder.id !== editingId" :key="folder.id" class="ph3 pv3 bb b--light-silver">
+        <span @click.stop="setEditingId(folder.id)">{{folder.name}}</span>
       </li>
       <li v-if="folder.id === editingId" :key="folder.id" class="ph3 pv3 bb b--light-silver">
-        <input v-model='editingName'  @blur="lostFocus"/>
+        <input :ref="'input-'+folder.id" v-model='editingName' @keyup.enter="lostFocus" @blur="lostFocus"/>
       </li>
     </template>
   </ul>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-// import {db} from '../api/firebase'
+import {db, auth} from '../api/firebase'
 export default {
   data: function () {
     return {
@@ -26,21 +26,31 @@ export default {
   },
   computed: {
     folders () { return this.$store.state.folders },
-    user () { return this.$store.state.user }
+    userState () { return this.$store.state.userState }
   },
-  // watch: { 'this.$store.state.user': 'this.addFolderWatcher' },
   // created () { },
   methods: {
     lostFocus: function () {
-      console.log(this.editingId)
+      if (this.editingId && this.editingName) {
+        db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(this.editingId).set({name: this.editingName})
+      }
+      this.editingId = ''
+      this.editingName = ''
     },
     setEditingId: function (id) {
       this.editingId = id
-      this.folders.array.forEach(element => {
-        if (element.id === this.editingId && element.name !== 'New Folder') {
-          this.editingName = element.name
-        } else {
-          this.editingName = ''
+      this.$nextTick(() => {
+        console.log('refs', this.$refs, id)
+        console.log(this.$refs['input-' + id][0])
+        this.$refs['input-' + id][0].focus()
+      })
+      this.folders.forEach(element => {
+        if (element.id === this.editingId) {
+          if (element.name !== 'New Folder') {
+            this.editingName = element.name
+          } else {
+            this.editingName = ''
+          }
         }
       })
     },

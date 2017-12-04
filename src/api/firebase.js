@@ -1,7 +1,7 @@
 import config from './firebase-config'
 import firebase from 'firebase'
 import 'firebase/firestore'
-import store, { USERSTATES } from '../store'
+import store from '../store'
 
 firebase.initializeApp(config)
 
@@ -11,16 +11,16 @@ export const auth = firebase.auth()
 
 export const signIn = (email, password) => {
   auth.signInWithEmailAndPassword(email, password).then((user) => {
-    store.dispatch('setUserState', USERSTATES.LOGGEDIN)
+    store.dispatch('setUserState', 'LOGGEDIN')
   }).catch(function (error) {
-    store.dispatch('setUserState', USERSTATES.LOGGEDOUT)
+    store.dispatch('setUserState', 'LOGGEDOUT')
     console.log(error)
   })
 }
 
 export const signOut = () => {
   auth.signOut().then(function () {
-    store.dispatch('setUserState', USERSTATES.LOGGEDOUT)
+    store.dispatch('setUserState', 'LOGGEDOUT')
   }).catch(function (error) {
     console.log(error)
   })
@@ -48,21 +48,38 @@ export const createUserWithEmailAndPassword = (email, password) => {
     })
 }
 
+let folderWatchHandler
 auth.onAuthStateChanged(function (user) {
   if (user) {
     // console.log('calling getIdToken', user)
     user.getIdToken().then((accessToken) => {
       // console.log('after calling getIdToken')
-      store.dispatch('setUserState', USERSTATES.LOGGEDIN)
-      // store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
+      store.dispatch('setUserState', 'LOGGEDIN')
+      store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
       // store.dispatch('setUser', user.email)
-      // getFolders()
+      folderWatchHandler = setFolderWatch()
     })
   } else {
-    store.dispatch('setUserState', USERSTATES.LOGGEDOUT)
+    store.dispatch('setUserState', 'LOGGEDOUT')
     console.log('There was no user')
+    folderWatchHandler && folderWatchHandler()
   }
 })
+
+function setFolderWatch () {
+  return db.collection('users').doc(auth.currentUser.uid).collection('folders').onSnapshot((querySnapshot) => {
+    console.log('callback called with ', querySnapshot)
+    const folders = []
+    querySnapshot.forEach((doc) => {
+      folders.push({name: doc.data().name, id: doc.id})
+      // folders.push({name: doc.data().name, editing: false})
+    }, function (error) {
+      console.log('Snapshot error', error)
+    })
+    // this.folders = folders
+    store.dispatch('setFolders', folders)
+  })
+}
 
 // setTimeout(function () {
 //   const citiesRef = db.collection('cities')

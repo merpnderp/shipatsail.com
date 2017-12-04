@@ -36,7 +36,7 @@ export default {
     }
   },
   computed: {
-    userState () { return this.$store.state.userState }
+    userState () { return this.$store.state.users.userState }
   },
   methods: {
     route (r) {
