@@ -30,13 +30,13 @@
 export default {
   data: () => ({
     valid: true,
-    email: 'kalebmurphy@gmail.com',
+    email: '',
     emailRules: [
       v => !!v || 'Email is required',
       v => (v && v.length) >= 5 || 'Email is required'
     ],
-    password: 'testtest12398alksdjfAKNfdalksjb/..2341',
-    password2: 'testtest12398alksdjfAKNfdalksjb/..2341',
+    password: '',
+    password2: '',
     passwordHide: true,
     passwordHide2: true,
     passwordRules: [

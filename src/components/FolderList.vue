@@ -1,14 +1,19 @@
 <template>
 <article class="pa3 pa5-ns">
-  <h1 class="f4 bold center mw6">Folders</h1>
+  <h1 class="f4 bold center mw6">Folders <i @click.stop="addFolder" class="fa fa-plus" title="New Folder" aria-hidden="true"></i></h1>
   <ul class="list pl0 ml0 center mw6 ba b--light-silver br2">
     <template v-for="(folder, index) in folders">
-      <!-- <li v-if="folder.id !== editingId" :key="folder.id" @click="setEditingId(folder.id)" class="ph3 pv3 bb b--light-silver"> -->
-      <li v-if="folder.id !== editingId" :key="folder.id" class="ph3 pv3 bb b--light-silver">
-        <span @click.stop="setEditingId(folder.id)">{{folder.name}}</span>
-      </li>
-      <li v-if="folder.id === editingId" :key="folder.id" class="ph3 pv3 bb b--light-silver">
-        <input :ref="'input-'+folder.id" v-model='editingName' @keyup.enter="lostFocus" @blur="lostFocus"/>
+      <li :key="folder.id" class="ph3 pv3 bb b--light-silver">
+        <div class="flex">
+          <span class="w-90" v-if="folder.id !== editingId" @click.stop="selectFolder(folder)">
+            <span @click.stop="setEditingId(folder.id)">{{folder.name}}</span>
+          </span>
+          <span class="w-90" v-else>
+            <input v-if="folder.id === editingId" @keyup.enter.stop="lostFocus(index)" @blur.stop="lostFocus(index)" 
+             :ref="'input-'+folder.id" v-model='editingName' @click.stop="selectFolder(folder)"/>
+          </span>
+          <i @click.stop="removeFolder(folder)" class="w-10 tr-l fa fa-trash" aria-hidden="true"></i>
+        </div>
       </li>
     </template>
   </ul>
@@ -16,7 +21,6 @@
 </template>
 
 <script>
-import {db, auth} from '../api/firebase'
 export default {
   data: function () {
     return {
@@ -28,11 +32,11 @@ export default {
     folders () { return this.$store.state.folders },
     userState () { return this.$store.state.userState }
   },
-  // created () { },
   methods: {
-    lostFocus: function () {
-      if (this.editingId && this.editingName) {
-        db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(this.editingId).set({name: this.editingName})
+    lostFocus: function (index) {
+      this.editingName = this.editingName.replace(/^\s+/, '').replace(/\s+$/, '')
+      if (this.editingId && this.editingName && this.editingName !== this.folders[index].name) {
+        this.$store.dispatch('updateFolderName', { id: this.editingId, name: this.editingName })
       }
       this.editingId = ''
       this.editingName = ''
@@ -54,12 +58,16 @@ export default {
         }
       })
     },
-    addFolder: function (folder) {
-      // if (this.$store.state.user) {
-      // db.collection('users').doc(this.$store.state.user.uid).collection('folders').add({ name: folder })
+    removeFolder: function (folder) {
+      this.$store.dispatch('removeFolder', folder)
+    },
+    addFolder: function () {
+      this.$store.dispatch('addFolder', {name: 'New Folder'})
+    },
+    selectFolder: function (folder) {
+      // if (folder.id !== this.editingId) {
+      this.$router.push(`/folder/${folder.name}`)
       // }
-      // const foldersColleciton = db.collection('folders')
-      // return foldersColleciton.add(folder)
     }
   }
 }

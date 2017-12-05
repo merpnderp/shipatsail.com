@@ -30,12 +30,12 @@ export default {
   data: () => ({
     valid: true,
     passwordHide: true,
-    email: 'kalebmurphy@gmail.com',
+    email: '',
     emailRules: [
       v => !!v || 'Email is required',
       v => (v && v.length) >= 5 || 'Email is required'
     ],
-    password: 'testtest12398alksdjfAKNfdalksjb/..2341',
+    password: '',
     passwordRules: [
       v => !!v || 'Password is required',
       v => (v && v.length) >= 8 || 'Password must be at least 8 characters'

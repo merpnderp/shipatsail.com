@@ -76,9 +76,23 @@ function setFolderWatch () {
     }, function (error) {
       console.log('Snapshot error', error)
     })
+    if (folders.length === 0) {
+      addFolder('New Folder')
+    }
     // this.folders = folders
     store.dispatch('setFolders', folders)
   })
+}
+
+export function updateFolderName (id, name) {
+  db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(id).set({name: name})
+}
+
+export function addFolder (name) {
+  db.collection('users').doc(auth.currentUser.uid).collection('folders').add({name: name})
+}
+export function removeFolder (folder) {
+  db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folder.id).delete()
 }
 
 // setTimeout(function () {
