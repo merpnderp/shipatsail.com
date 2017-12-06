@@ -5,6 +5,7 @@ import HelloWorld from '@/components/Home'
 import SignIn from '@/components/Authentication/SignIn'
 import SignUp from '@/components/Authentication/SignUp'
 import FolderList from '@/components/FolderList'
+import Folder from '@/components/Folder'
 import store from '../store'
 Vue.use(Router)
 
@@ -29,6 +30,11 @@ const router = new Router({
       path: '/signup',
       name: 'SignUp',
       component: SignUp
+    },
+    {
+      path: '/folder/:folderId',
+      name: 'Folder',
+      component: Folder
     }
   ]
 })
