@@ -12,9 +12,6 @@ export default {
   components: {
   },
   methods: {
-    test () {
-      console.log('testing')
-    }
   }
 
 }

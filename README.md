@@ -1,6 +1,6 @@
 # shipatsail.com
 
-> A Vue.js project
+> An experiment with Firebase and Vue to create encrypted cloud text storage. 
 
 ## Build Setup
 
@@ -14,7 +14,7 @@ npm run dev
 # build for production with minification
 npm run build
 
-# build for production and view the bundle analyzer report
+# build for production and view the bundle analyzer report:
 npm run build --report
 ```
 

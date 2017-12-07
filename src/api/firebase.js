@@ -71,7 +71,8 @@ function setFolderWatch () {
     console.log('callback called with ', querySnapshot)
     const folders = []
     querySnapshot.forEach((doc) => {
-      folders.push({name: doc.data().name, id: doc.id})
+      console.log(doc)
+      folders.push({ name: doc.data().name, id: doc.id, notes: doc.notes.map((note) => { return note.data() }) })
       // folders.push({name: doc.data().name, editing: false})
     }, function (error) {
       console.log('Snapshot error', error)
@@ -85,14 +86,34 @@ function setFolderWatch () {
 }
 
 export function updateFolderName (id, name) {
-  db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(id).set({name: name})
+  db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(id).set({ name: name })
 }
 
 export function addFolder (name) {
-  db.collection('users').doc(auth.currentUser.uid).collection('folders').add({name: name})
+  db.collection('users').doc(auth.currentUser.uid).collection('folders').add({ name: name })
 }
+
 export function removeFolder (folder) {
   db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folder.id).delete()
+}
+
+export function addNote (folderId) {
+  console.log('adding', folderId)
+  db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').add(
+    {
+      note: '',
+      created: new Date(),
+      lastEdited: new Date(),
+      shared: false,
+      encrypted: false
+    }
+  ).then((result) => {
+    console.log('added', result)
+  })
+}
+
+export function updateNote (folderId, note) {
+  db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').doc(note.id).set(note)
 }
 
 // setTimeout(function () {

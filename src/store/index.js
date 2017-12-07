@@ -6,7 +6,7 @@ import users from './modules/users'
 import * as getters from './getters'
 // import products from './modules/products'
 import createLogger from '../plugins/logger'
-import { updateFolderName, addFolder, removeFolder } from '../api/firebase'
+import { updateFolderName, addFolder, removeFolder, addNote } from '../api/firebase'
 Vue.use(Vuex)
 
 // export const USERSTATES = { 'LOGGEDOUT': 'LOGGEDOUT', 'FETCHING': 'FETCHING', 'LOGGEDIN': 'LOGGEDIN' }
@@ -37,6 +37,9 @@ export default new Vuex.Store({
     },
     removeFolder: ({ commit }, folder) => {
       removeFolder(folder)
+    },
+    addNote: ({ commit }, folderId) => {
+      addNote(folderId)
     }
   },
   // actions,
