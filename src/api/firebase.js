@@ -49,6 +49,7 @@ export const createUserWithEmailAndPassword = (email, password) => {
 }
 
 let folderWatchHandler
+let getFolderNotesId
 auth.onAuthStateChanged(function (user) {
   if (user) {
     // console.log('calling getIdToken', user)
@@ -58,31 +59,52 @@ auth.onAuthStateChanged(function (user) {
       store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
       // store.dispatch('setUser', user.email)
       folderWatchHandler = setFolderWatch()
+      if (getFolderNotesId) {
+        queryNotes(getFolderNotesId)
+      }
     })
   } else {
     store.dispatch('setUserState', 'LOGGEDOUT')
-    console.log('There was no user')
     folderWatchHandler && folderWatchHandler()
   }
 })
 
 function setFolderWatch () {
   return db.collection('users').doc(auth.currentUser.uid).collection('folders').onSnapshot((querySnapshot) => {
-    console.log('callback called with ', querySnapshot)
     const folders = []
     querySnapshot.forEach((doc) => {
-      console.log(doc)
-      folders.push({ name: doc.data().name, id: doc.id, notes: doc.notes.map((note) => { return note.data() }) })
-      // folders.push({name: doc.data().name, editing: false})
+      folders.push(
+        {
+          name: doc.data().name,
+          id: doc.id
+        }
+      )
     }, function (error) {
       console.log('Snapshot error', error)
     })
     if (folders.length === 0) {
       addFolder('New Folder')
     }
-    // this.folders = folders
     store.dispatch('setFolders', folders)
   })
+}
+
+let noteWatchHandler
+export function queryNotes (folderId) {
+  noteWatchHandler && noteWatchHandler()
+  if (!auth.currentUser) {
+    getFolderNotesId = folderId
+  } else {
+    getFolderNotesId = undefined
+    noteWatchHandler = db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId)
+      .collection('notes').onSnapshot((querySnapshot) => {
+        const notes = []
+        querySnapshot.forEach((note) => {
+          notes.push(JSON.parse(JSON.stringify({id: note.id, ...note.data()})))
+        })
+        store.dispatch('setNotes', notes)
+      })
+  }
 }
 
 export function updateFolderName (id, name) {
@@ -101,6 +123,7 @@ export function addNote (folderId) {
   console.log('adding', folderId)
   db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').add(
     {
+      title: '',
       note: '',
       created: new Date(),
       lastEdited: new Date(),
@@ -110,6 +133,11 @@ export function addNote (folderId) {
   ).then((result) => {
     console.log('added', result)
   })
+}
+
+export function deleteNote (folderId, noteId) {
+  console.log(folderId, noteId)
+  db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').doc(noteId).delete()
 }
 
 export function updateNote (folderId, note) {

@@ -6,6 +6,7 @@ import SignIn from '@/components/Authentication/SignIn'
 import SignUp from '@/components/Authentication/SignUp'
 import FolderList from '@/components/FolderList'
 import Folder from '@/components/Folder'
+import Note from '@/components/Note'
 import store from '../store'
 Vue.use(Router)
 
@@ -35,6 +36,11 @@ const router = new Router({
       path: '/folder/:folderId',
       name: 'Folder',
       component: Folder
+    },
+    {
+      path: '/folder/:folderId/note/:noteId',
+      name: 'Note',
+      component: Note
     }
   ]
 })

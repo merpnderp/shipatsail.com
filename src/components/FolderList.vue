@@ -69,6 +69,7 @@ export default {
     },
     selectFolder: function (folder) {
       if (folder.id !== this.editingId) {
+        this.$store.dispatch('clearNotes')
         this.$router.push(`/folder/${folder.id}`)
       }
     }

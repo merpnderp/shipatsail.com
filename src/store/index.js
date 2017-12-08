@@ -6,7 +6,7 @@ import users from './modules/users'
 import * as getters from './getters'
 // import products from './modules/products'
 import createLogger from '../plugins/logger'
-import { updateFolderName, addFolder, removeFolder, addNote } from '../api/firebase'
+import { deleteNote, updateFolderName, addFolder, removeFolder, addNote, queryNotes } from '../api/firebase'
 Vue.use(Vuex)
 
 // export const USERSTATES = { 'LOGGEDOUT': 'LOGGEDOUT', 'FETCHING': 'FETCHING', 'LOGGEDIN': 'LOGGEDIN' }
@@ -17,29 +17,45 @@ const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
   state: {
-    folders: []
+    folders: [],
+    notes: []
   },
   mutations: {
     'SET_FOLDERS' (state, folders) {
       // state.folders = folders.sort(function (a, b) { return (a.name > b.name) - (a.name < b.name) })
       state.folders = folders.sort(function (a, b) { return (a.name.localeCompare(b.name)) })
+    },
+    'SET_NOTES' (state, notes) {
+      state.notes = notes.sort(function (a, b) { return (a.lastEdited > b.lastEdited) })
     }
   },
   actions: {
-    setFolders: ({ commit }, folders) => {
-      commit('SET_FOLDERS', folders)
-    },
-    updateFolderName: ({ commit }, params) => {
-      updateFolderName(params.id, params.name)
-    },
     addFolder: ({ commit }, { name }) => {
       addFolder(name)
+    },
+    addNote: ({ commit }, folderId) => {
+      addNote(folderId)
+    },
+    clearNotes: ({ commit }) => {
+      commit('SET_NOTES', [])
+    },
+    deleteNote: ({ commit }, params) => {
+      deleteNote(params.folderId, params.noteId)
     },
     removeFolder: ({ commit }, folder) => {
       removeFolder(folder)
     },
-    addNote: ({ commit }, folderId) => {
-      addNote(folderId)
+    queryNotes: ({ commit }, folderId) => {
+      queryNotes(folderId)
+    },
+    setFolders: ({ commit }, folders) => {
+      commit('SET_FOLDERS', folders)
+    },
+    setNotes: ({ commit }, notes) => {
+      commit('SET_NOTES', notes)
+    },
+    updateFolderName: ({ commit }, params) => {
+      updateFolderName(params.id, params.name)
     }
   },
   // actions,

@@ -1,15 +1,15 @@
 <template>
  <article class="pa3 pa5-ns">
   <h1 class="f4 bold center mw6">
-    <span v-if="!editing" @click.stop="setEditing">
+    <span v-if="!editing" @click.stop="setEditingName">
       {{folderName}} 
     </span>
     <span v-else>
       <input @keyup.enter.stop="lostFocus" @blur.stop="lostFocus" :ref="'input'" v-model='editingName'/>
     </span>
     <span v-if="!editing">
-    <i @click.stop="setEditing" class="pl3 fa fa-pencil" aria-hidden="true"></i>
-    <i @click.stop="addNote" class="pl3 fa fa-plus" title="New Folder" aria-hidden="true"></i>
+      <i @click.stop="setEditingName" class="pl3 fa fa-pencil" aria-hidden="true"></i>
+      <i @click.stop="addNote" class="pl3 fa fa-plus" title="New Folder" aria-hidden="true"></i>
     </span>
   </h1>
   <ul class="list pl0 ml0 center mw6 ba b--light-silver br2">
@@ -17,9 +17,9 @@
       <li :key="note.id" class="ph3 pv3 bb b--light-silver">
         <div class="flex">
           <span class="w-90" @click.stop="selectNote(note)">
-            <span @click.stop="setEditingId(folder.id)">Hello{{folder.name}}</span>
+            <span>{{note.title}}</span>
           </span>
-          <i @click.stop="removeNote(note)" class="w-10 tr-l fa fa-trash" aria-hidden="true"></i>
+          <i @click.stop="deleteNote(note)" class="w-10 tr-l fa fa-trash" aria-hidden="true"></i>
         </div>
       </li>
     </template>
@@ -39,6 +39,7 @@ export default {
   },
   created: function () {
     console.log('folder created', this.$route.params)
+    this.$store.dispatch('queryNotes', this.$route.params.folderId)
     // this.folderId = this.$route.params.folderId
     // this.folders.forEach((folder) => {
     //   if (folder.id === this.$route.params.folderId) {
@@ -48,12 +49,7 @@ export default {
   },
   computed: {
     notes () {
-      this.folders.forEach((folder) => {
-        if (folder.id === this.$route.params.folderId) {
-          console.log('notes', folder)
-          return folder.notes
-        }
-      })
+      return this.$store.state.notes
     },
     folderId () {
       return this.$route.params.folderId
@@ -73,8 +69,8 @@ export default {
     addNote: function () {
       this.$store.dispatch('addNote', this.folderId)
     },
-    deleteNote: function () {
-
+    deleteNote: function (note) {
+      this.$store.dispatch('deleteNote', {folderId: this.folderId, noteId: note.id})
     },
     lostFocus: function () {
       this.editingName = this.editingName.replace(/^\s+/, '').replace(/\s+$/, '')
@@ -83,7 +79,10 @@ export default {
       }
       this.editing = false
     },
-    setEditing: function () {
+    selectNote: function (note) {
+      this.$router.push(`/folder/${this.folderId}/note/${note.id}`)
+    },
+    setEditingName: function () {
       this.editing = !this.editing
       this.editingName = this.folderName
       if (this.editing) {
