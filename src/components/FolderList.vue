@@ -6,9 +6,9 @@
   </h1>
   <ul class="list pl0 ml0 center mw6 ba b--light-silver br2">
     <template v-for="(folder, index) in folders">
-      <li :key="folder.id" class="ph3 pv3 bb b--light-silver">
+      <li :key="folder.id" class="ph3 pv3 bb b--light-silver" @click.stop="selectFolder(folder)">
         <div class="flex">
-          <span class="w-80" v-if="folder.id !== editingId" @click.stop="selectFolder(folder)">
+          <span class="w-80" v-if="folder.id !== editingId">
             <span>{{folder.name}}</span>
           </span>
           <span class="w-80" v-else>

@@ -143,18 +143,3 @@ export function deleteNote (folderId, noteId) {
 export function updateNote (folderId, note) {
   db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').doc(note.id).set(note)
 }
-
-// setTimeout(function () {
-//   const citiesRef = db.collection('cities')
-//   Promise.all([
-//     citiesRef.doc('SF').set({ name: 'San Francisco', state: 'CA', country: 'USA', capital: false, population: 860000 }),
-//     citiesRef.doc('LA').set({ name: 'Los Angeles', state: 'CA', country: 'USA', capital: false, population: 3900000 }),
-//     citiesRef.doc('DC').set({ name: 'Washington, D.C.', state: 'Poopistan', country: 'USA', capital: true, population: 680000 }),
-//     citiesRef.doc('TOK').set({ name: 'Tokyo', state: null, country: 'Japan', capital: true, population: 9000000 }),
-//     citiesRef.doc('BJ').set({ name: 'Beijing', state: null, country: 'China', capital: true, population: 21500000 })
-//   ]).then(function () {
-//     console.log('all done')
-//   }).catch(function (error) {
-//     console.log('error', error)
-//   })
-// }, 1000)

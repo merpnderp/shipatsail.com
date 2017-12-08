@@ -5,8 +5,8 @@
     <i @click.stop="deleteNote(note)" class="w-10 tr-l fa fa-trash" aria-hidden="true"></i>
   </h1>
   <p class="lh-copy measure center f6 black-70">
-    <textarea id="comment" name="comment" style="min-height: 50vh"
-    class="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2" aria-describedby="comment-desc"></textarea>
+    <textarea id="comment" name="comment" style="min-height: 40vh"
+    class="db border-box hover-black w-80 measure ba b--black-20 pa2 br2 mb2" aria-describedby="comment-desc"></textarea>
   </p>
  </article>
 </template>
