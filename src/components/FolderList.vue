@@ -48,8 +48,8 @@ export default {
     setEditingId: function (id) {
       this.editingId = id
       this.$nextTick(() => {
-        console.log('refs', this.$refs, id)
-        console.log(this.$refs['input-' + id][0])
+        // console.log('refs', this.$refs, id)
+        // console.log(this.$refs['input-' + id][0])
         this.$refs['input-' + id][0].focus()
       })
       this.folders.forEach(element => {

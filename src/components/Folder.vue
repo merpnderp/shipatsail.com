@@ -34,19 +34,11 @@ export default {
     return {
       editing: false,
       editingName: '',
-      // notes: [],
       currentFolderId: ''
     }
   },
   created: function () {
-    console.log('folder created', this.$route.params)
     this.$store.dispatch('queryNotes', this.$route.params.folderId)
-    // this.folderId = this.$route.params.folderId
-    // this.folders.forEach((folder) => {
-    //   if (folder.id === this.$route.params.folderId) {
-    //     this.folderName = folder.name
-    //   }
-    // })
   },
   computed: {
     notes () {

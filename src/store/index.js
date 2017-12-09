@@ -6,7 +6,7 @@ import users from './modules/users'
 import * as getters from './getters'
 // import products from './modules/products'
 import createLogger from '../plugins/logger'
-import { deleteNote, updateFolderName, addFolder, removeFolder, addNote, queryNotes } from '../api/firebase'
+import { deleteNote, updateFolderName, addFolder, removeFolder, addNote, queryNotes, setNote } from '../api/firebase'
 Vue.use(Vuex)
 
 // export const USERSTATES = { 'LOGGEDOUT': 'LOGGEDOUT', 'FETCHING': 'FETCHING', 'LOGGEDIN': 'LOGGEDIN' }
@@ -53,6 +53,9 @@ export default new Vuex.Store({
     },
     setNotes: ({ commit }, notes) => {
       commit('SET_NOTES', notes)
+    },
+    setNote: ({ commit }, note) => {
+      setNote(note)
     },
     updateFolderName: ({ commit }, params) => {
       updateFolderName(params.id, params.name)

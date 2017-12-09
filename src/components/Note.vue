@@ -24,12 +24,20 @@ export default {
   },
   watch: {
     note: function (newNote) {
-      // this.textUpdated(newNote)
+      this.textUpdated(newNote)
+    },
+    notes: function () {
+      // console.log('notes watch')
+      this.notes.forEach((note) => {
+        if (note.id === this.noteId) {
+          this.note = note.note
+        }
+      })
     }
   },
   computed: {
     title () {
-      console.log(this.note)
+      // console.log(this.note)
       return this.note ? this.note.split(/\n/)[0].substring(0, 20) : 'New Note'
     },
     notes () {
@@ -45,28 +53,29 @@ export default {
   methods: {
     deleteNote: function () {
       this.$store.dispatch('deleteNote', {folderId: this.folderId, noteId: this.noteId})
+      this.$router.push(`/folder/${this.folderId}`)
     },
     textUpdated: function (note) {
-      note = note || this.note
-      console.log('updated')
-      alert('hi')
-      // this.timeoutHandler && clearTimeout(this.timeoutHandler)
-      // this.timeoutHandler = setTimeout(() => {
-      //   this.$store.dispatch('setNote', note)
-      //   this.timeoutHandler = undefined
-      // }, 10000)
+      this.note = note || this.note
+      this.timeoutHandler && clearTimeout(this.timeoutHandler)
+      this.timeoutHandler = setTimeout(() => {
+        this.saveNote()
+        this.timeoutHandler = undefined
+      }, 10000)// auto-save every 10 seconds
+      // }, 1)// auto-save every 10 seconds
+    },
+    saveNote () {
+      this.$store.dispatch('setNote', {folderId: this.folderId, noteId: this.noteId, note: this.note, title: this.title})
     },
     pageLeaveEvent: function () {
-      alert('trying to elave')
-      return 1
+      this.saveNote()
+      // return 1
     }
   },
   created: function () {
-    console.log('adding handlers')
     window.onbeforeunload = this.pageLeaveEvent
     window.onpopstate = this.pageLeaveEvent
-    // window.onblur = this.pageLeaveEvent
-    // window.onmouseout = this.pageLeaveEvent
+    this.$store.dispatch('queryNotes', this.$route.params.folderId)
   }
 
 }

@@ -120,7 +120,7 @@ export function removeFolder (folder) {
 }
 
 export function addNote (folderId) {
-  console.log('adding', folderId)
+  // console.log('adding', folderId)
   db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').add(
     {
       title: '',
@@ -131,12 +131,20 @@ export function addNote (folderId) {
       encrypted: false
     }
   ).then((result) => {
-    console.log('added', result)
+    // console.log('added', result)
+  })
+}
+
+export function setNote ({folderId, noteId, note, title}) {
+  db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').doc(noteId).update({
+    note,
+    title,
+    lastEdited: new Date()
   })
 }
 
 export function deleteNote (folderId, noteId) {
-  console.log(folderId, noteId)
+  // console.log(folderId, noteId)
   db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').doc(noteId).delete()
 }
 
