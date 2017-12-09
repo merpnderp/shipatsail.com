@@ -2,6 +2,7 @@
   <div class="fl-page">
 
     <nav class="db dt-l w-100 border-box pa3 ph5-l">
+    <!-- <nav class="db dt-l center border-box pa3 ph5-l"> -->
       <a class="db dtc-l v-mid mid-gray link dim w-100 w-25-l tc tl-l mb2 mb0-l" href="#" title="Home">
         <img src="http://tachyons.io/img/logo.jpg" class="dib w2 h2 br-100" alt="shipatsail.com">
       </a>
@@ -15,8 +16,9 @@
           class="link dim dark-gray f6 f5-l dib mr3 mr4-l" title="Sign Out">Sign Out</router-link>
       </div>
     </nav>
-
-    <router-view></router-view>
+    <div class="pa1-ns pb5-ns ph3 pb3">
+      <router-view></router-view>
+    </div>
 
     <main-footer></main-footer>
 

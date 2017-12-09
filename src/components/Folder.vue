@@ -1,5 +1,6 @@
 <template>
- <article class="pa3 pa5-ns">
+ <!-- <article class="pa3 pa5-ns"> -->
+ <article class="">
   <h1 class="f4 bold center mw6">
     <span v-if="!editing" @click.stop="setEditingName">
       {{folderName}} 
