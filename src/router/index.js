@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import HelloWorld from '@/components/HelloWorld'
 import Home from '@/components/Home'
 import SignIn from '@/components/Authentication/SignIn'
 import SignUp from '@/components/Authentication/SignUp'
@@ -16,10 +15,7 @@ const router = new Router({
       path: '/',
       component: Home,
       children: [
-        // UserHome will be rendered inside User's <router-view>
-        // when /user/:id is matched
         { path: '', component: FolderList }
-        // ...other sub routes
       ]
     },
     {

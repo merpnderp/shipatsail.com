@@ -136,10 +136,15 @@ export function addNote (folderId) {
 }
 
 export function setNote ({folderId, noteId, note, title}) {
+  console.log('firebase setting note ', folderId, noteId, note)
   db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').doc(noteId).update({
     note,
     title,
     lastEdited: new Date()
+  }).then((result) => {
+    console.log('setting result', result)
+  }, (error) => {
+    console.log('setting error', error)
   })
 }
 
