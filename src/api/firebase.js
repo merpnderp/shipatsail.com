@@ -52,12 +52,9 @@ let folderWatchHandler
 let getFolderNotesId
 auth.onAuthStateChanged(function (user) {
   if (user) {
-    // console.log('calling getIdToken', user)
     user.getIdToken().then((accessToken) => {
-      // console.log('after calling getIdToken')
       store.dispatch('setUserState', 'LOGGEDIN')
       store.dispatch('setUser', JSON.parse(JSON.stringify(user)))
-      // store.dispatch('setUser', user.email)
       folderWatchHandler = setFolderWatch()
       if (getFolderNotesId) {
         queryNotes(getFolderNotesId)
@@ -89,20 +86,19 @@ function setFolderWatch () {
   })
 }
 
-let noteWatchHandler
+let noteWatchHandler = {}
 export function queryNotes (folderId) {
-  noteWatchHandler && noteWatchHandler()
   if (!auth.currentUser) {
     getFolderNotesId = folderId
-  } else {
+  } else if (!noteWatchHandler[folderId]) {
     getFolderNotesId = undefined
-    noteWatchHandler = db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId)
+    noteWatchHandler[folderId] = db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId)
       .collection('notes').onSnapshot((querySnapshot) => {
         const notes = []
         querySnapshot.forEach((note) => {
           notes.push(JSON.parse(JSON.stringify({id: note.id, ...note.data()})))
         })
-        store.dispatch('setNotes', notes)
+        store.dispatch('setNotes', {folderId, notes})
       })
   }
 }
@@ -120,7 +116,6 @@ export function removeFolder (folder) {
 }
 
 export function addNote (folderId) {
-  // console.log('adding', folderId)
   db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').add(
     {
       title: '',
@@ -136,20 +131,18 @@ export function addNote (folderId) {
 }
 
 export function setNote ({folderId, noteId, note, title}) {
-  console.log('firebase setting note ', folderId, noteId, note)
-  db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').doc(noteId).update({
+  auth.currentUser && auth.currentUser.uid && db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').doc(noteId).update({
     note,
     title,
     lastEdited: new Date()
   }).then((result) => {
-    console.log('setting result', result)
+    // console.log('setting result', result)
   }, (error) => {
     console.log('setting error', error)
   })
 }
 
 export function deleteNote (folderId, noteId) {
-  // console.log(folderId, noteId)
   db.collection('users').doc(auth.currentUser.uid).collection('folders').doc(folderId).collection('notes').doc(noteId).delete()
 }
 

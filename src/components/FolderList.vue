@@ -1,5 +1,4 @@
 <template>
-<!-- <article class="pa3 pa5-ns"> -->
 <article class="">
   <h1 class="f4 bold center mw6">
     Folders 
@@ -48,8 +47,6 @@ export default {
     setEditingId: function (id) {
       this.editingId = id
       this.$nextTick(() => {
-        // console.log('refs', this.$refs, id)
-        // console.log(this.$refs['input-' + id][0])
         this.$refs['input-' + id][0].focus()
       })
       this.folders.forEach(element => {
@@ -70,7 +67,6 @@ export default {
     },
     selectFolder: function (folder) {
       if (folder.id !== this.editingId) {
-        this.$store.dispatch('clearNotes')
         this.$router.push(`/folder/${folder.id}`)
       }
     }

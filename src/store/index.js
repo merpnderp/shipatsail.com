@@ -1,19 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import actions from './actions'
-// import * as types from './mutation-types'
 import users from './modules/users'
 import * as getters from './getters'
-// import products from './modules/products'
 import createLogger from '../plugins/logger'
 import { deleteNote, updateFolderName, addFolder, removeFolder, addNote, queryNotes, setNote } from '../api/firebase'
 Vue.use(Vuex)
 
-// export const USERSTATES = { 'LOGGEDOUT': 'LOGGEDOUT', 'FETCHING': 'FETCHING', 'LOGGEDIN': 'LOGGEDIN' }
-
 const debug = process.env.NODE_ENV !== 'production'
-
-// let folderSubscription
 
 export default new Vuex.Store({
   state: {
@@ -22,11 +15,13 @@ export default new Vuex.Store({
   },
   mutations: {
     'SET_FOLDERS' (state, folders) {
-      // state.folders = folders.sort(function (a, b) { return (a.name > b.name) - (a.name < b.name) })
       state.folders = folders.sort(function (a, b) { return (a.name.localeCompare(b.name)) })
     },
-    'SET_NOTES' (state, notes) {
-      state.notes = notes.sort(function (a, b) { return (a.lastEdited > b.lastEdited) })
+    'SET_CURRENT_FOLDER' (state, folderId) {
+      state.currentFolderId = folderId
+    },
+    'SET_NOTES' (state, {folderId, notes}) {
+      state.notes = { ...state.notes, [folderId]: notes.sort(function (a, b) { return (a.lastEdited < b.lastEdited) }) }
     }
   },
   actions: {
@@ -37,7 +32,8 @@ export default new Vuex.Store({
       addNote(folderId)
     },
     clearNotes: ({ commit }) => {
-      commit('SET_NOTES', [])
+      console.log('Clearning Notes')
+      // commit('SET_NOTES', [])
     },
     deleteNote: ({ commit }, params) => {
       deleteNote(params.folderId, params.noteId)
@@ -51,10 +47,10 @@ export default new Vuex.Store({
     setFolders: ({ commit }, folders) => {
       commit('SET_FOLDERS', folders)
     },
-    setNotes: ({ commit }, notes) => {
-      commit('SET_NOTES', notes)
+    setNotes: ({ commit }, {folderId, notes}) => {
+      commit('SET_NOTES', {folderId, notes})
     },
-    setNote: ({ commit }, note) => {
+    setNote: ({ commit, state }, note) => {
       setNote(note)
     },
     updateFolderName: ({ commit }, params) => {

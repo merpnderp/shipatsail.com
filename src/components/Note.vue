@@ -1,14 +1,13 @@
 <template>
- <!-- <article class="pa3 pa5-ns"> -->
- <article class="ml7-ns">
-  <h1 class="f4 bold center-ml mw5 flex mb2">
+ <article class="">
+  <h1 class="f4 bold center mw6">
     <i @click="goBack" class="w-25 fa fa-arrow-left" aria-hidden="true"></i>
     <span class="w-75">{{title}}</span>
     <i @click.stop="deleteNote(note)" class="tr-l fa fa-trash" aria-hidden="true"></i>
   </h1>
   </label>
-  <p class="lh-copy measure-wide center-ls  mw5 f6 black-70">
-    <textarea id="comment" name="comment" style="min-height: 40vh" v-model='note'
+  <p class="lh-copy measure-wide center mw6 pl3 f6 black-70">
+    <textarea id="comment" name="comment" style="min-height: 30vh" v-model='note'
     class="db border-box hover-black w-80 measure ba b--black-20 pa2 br2 mb2" aria-describedby="comment-desc"></textarea>
   </p>
  </article>
@@ -28,7 +27,7 @@ export default {
       this.textUpdated(newNote)
     },
     notes: function () {
-      this.notes.forEach((note) => {
+      this.notes[this.folderId] && this.notes[this.folderId].forEach((note) => {
         if (note.id === this.noteId) {
           this.note = note.note
         }
@@ -63,18 +62,19 @@ export default {
       this.timeoutHandler = setTimeout(() => {
         this.saveNote()
         this.timeoutHandler = undefined
-      }, 1000)// auto-save every 1 seconds
-      // }, 1)// auto-save every 1 seconds
+      }, 500)// auto-save every 1/2 second
     },
     saveNote () {
-      console.log('setingNotes', this.note)
       this.$store.dispatch('setNote', {folderId: this.folderId, noteId: this.noteId, note: this.note, title: this.title})
     }
   },
   created: function () {
-    window.onbeforeunload = this.saveNote
-    window.onpopstate = this.saveNote
     this.$store.dispatch('queryNotes', this.$route.params.folderId)
+    this.notes[this.folderId] && this.notes[this.folderId].forEach((note) => {
+      if (note.id === this.noteId) {
+        this.note = note.note
+      }
+    })
   }
 }
 </script>

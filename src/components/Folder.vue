@@ -1,10 +1,9 @@
 <template>
- <!-- <article class="pa3 pa5-ns"> -->
  <article class="">
   <h1 class="f4 bold center mw6">
     <router-link to="/"><i class="w-25 fa fa-arrow-left" aria-hidden="true"></i></router-link>
     <span v-if="!editing" @click.stop="setEditingName">
-      {{folderName}} 
+      {{folderName}}
     </span>
     <span v-else>
       <input @keyup.enter.stop="lostFocus" @blur.stop="lostFocus" :ref="'input'" v-model='editingName'/>
@@ -43,7 +42,7 @@ export default {
   },
   computed: {
     notes () {
-      return this.$store.state.notes
+      return this.$store.state.notes[this.folderId]
     },
     folderId () {
       return this.$route.params.folderId
