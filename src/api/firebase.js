@@ -4,11 +4,16 @@ import 'firebase/firestore'
 import store from '../store'
 
 firebase.initializeApp(config)
+const googleProvider = new firebase.auth.GoogleAuthProvider()
 
 export const db = firebase.firestore()
 
 export const auth = firebase.auth()
 
+export const googleSignin = () => {
+  console.log('calling signinRedirect')
+  auth.signInWithRedirect(googleProvider)// .then((response) => { console.log(response) }).catch(error => { console.log(error) })
+}
 export const signIn = (email, password) => {
   auth.signInWithEmailAndPassword(email, password).then((user) => {
     store.dispatch('setUserState', 'LOGGEDIN')
@@ -63,6 +68,22 @@ auth.onAuthStateChanged(function (user) {
   } else {
     store.dispatch('setUserState', 'LOGGEDOUT')
     folderWatchHandler && folderWatchHandler()
+  }
+})
+
+auth.getRedirectResult().then(function (result) {
+  if (result.credential) {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    // var token = result.credential.accessToken
+    // ...
+  }
+  // The signed-in user info.
+  console.log('logged in from Google')
+  store.dispatch('setUserState', 'LOGGEDIN')
+  store.dispatch('setUser', JSON.parse(JSON.stringify(result.user)))
+  folderWatchHandler = setFolderWatch()
+  if (getFolderNotesId) {
+    queryNotes(getFolderNotesId)
   }
 })
 

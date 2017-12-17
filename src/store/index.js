@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import users from './modules/users'
 import * as getters from './getters'
 import createLogger from '../plugins/logger'
-import { deleteNote, updateFolderName, addFolder, removeFolder, addNote, queryNotes, setNote } from '../api/firebase'
+import { addFolder, deleteNote, googleSignin, updateFolderName, removeFolder, addNote, queryNotes, setNote } from '../api/firebase'
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -37,6 +37,9 @@ export default new Vuex.Store({
     },
     deleteNote: ({ commit }, params) => {
       deleteNote(params.folderId, params.noteId)
+    },
+    googleSignin: () => {
+      googleSignin()
     },
     removeFolder: ({ commit }, folder) => {
       removeFolder(folder)

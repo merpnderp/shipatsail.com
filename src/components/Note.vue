@@ -4,18 +4,23 @@
     <i @click="goBack" class="w-25 fa fa-arrow-left" aria-hidden="true"></i>
     <span class="w-75">{{title}}</span>
     <i @click.stop="deleteNote(note)" class="tr-l fa fa-trash" aria-hidden="true"></i>
+    <i @click.stop="showPasswordModal" class="fa fa-lock" aria-hidden="true"></i>
   </h1>
-  </label>
   <p class="lh-copy measure-wide center mw6 pl3 f6 black-70">
     <textarea id="comment" name="comment" style="min-height: 30vh" v-model='note'
     class="db border-box hover-black w-80 measure ba b--black-20 pa2 br2 mb2" aria-describedby="comment-desc"></textarea>
   </p>
+  <password-modal ref="passwordModal"></password-modal>
  </article>
 </template>
 
 <script>
+import PasswordModal from './PasswordModal'
 let timeoutHandler
 export default {
+  components: {
+    PasswordModal
+  },
   data: function () {
     return {
       note: '',
@@ -56,6 +61,12 @@ export default {
     goBack: function () {
       this.$router.push(`/folder/${this.folderId}`)
     },
+    saveNote () {
+      this.$store.dispatch('setNote', {folderId: this.folderId, noteId: this.noteId, note: this.note, title: this.title})
+    },
+    showPasswordModal () {
+      this.$refs.passwordModal.open()
+    },
     textUpdated: function (note) {
       this.timeoutHandler && clearTimeout(this.timeoutHandler)
       this.note = note || this.note
@@ -63,9 +74,6 @@ export default {
         this.saveNote()
         this.timeoutHandler = undefined
       }, 500)// auto-save every 1/2 second
-    },
-    saveNote () {
-      this.$store.dispatch('setNote', {folderId: this.folderId, noteId: this.noteId, note: this.note, title: this.title})
     }
   },
   created: function () {

@@ -1,8 +1,15 @@
 <template>
   <main class="pa4 black-80">
     <form class="measure center">
+      <p>
+      <span class="mv6">Register in with </span>
+      <button class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" @click.stop="googleSignin">
+        <img class=" pt2 w3" src="/static/googlelogo.png"/>
+      </button>
+      </p>
+      <p>Or</p>
       <fieldset id="sign_up" class="ba b--transparent ph0 mh0">
-        <legend class="f4 fw6 ph0 mh0">Sign In</legend>
+        <legend class="f4 fw6 ph0 mh0">Register with Email</legend>
         <div class="mt3">
           <label class="db fw6 lh-copy f6" for="email-address">Email</label>
           <input v-model="email" class="pa2 input-reset ba bg-transparent w-100" type="email" name="email-address"  id="email-address">
@@ -58,6 +65,9 @@ export default {
         email: this.email,
         password: this.password
       })
+    },
+    googleSignin () {
+      this.$store.dispatch('googleSignin')
     },
     clear () {
       this.email = ''
